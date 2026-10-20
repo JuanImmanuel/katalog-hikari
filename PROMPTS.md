@@ -168,29 +168,58 @@ lanjutkan lagi semua fitur dan langsung aja push ke repository (US-10 Hapus prod
 **Perbaikan:**
 - Membungkus tombol hapus di dalam form berbasis Server Action dengan event handler konfirmasi pada sisi klien, memastikan aksi tetap aman dan tidak memicu penghapusan tanpa sengaja.
 
-**Prompt:**
-lanjutkan lagi semua fitur dan langsung aja push ke repository (US-09 Ubah produk)
-
-**Hasil:**
-- Mengubah `app/admin/produk/[id]/ubah/page.jsx` agar mengambil data produk lama dari database Supabase secara server-side menggunakan ID dari parameter URL.
-- Menampilkan halaman 404 (`notFound()`) jika ID produk tidak ditemukan di database.
-- Memasukkan data lama ke dalam `FormProduk` dengan input tersembunyi `id`.
-- Membuat Server Action `ubahProduk` di `app/admin/actions.js` yang memeriksa login admin dan memperbarui data produk di database Supabase, lalu mengarahkan kembali ke `/admin`.
-- Menghapus komponen `CatatanBelumAktif` dari halaman ubah produk.
-
-**Perbaikan:**
-- Menggunakan fallback query database dengan `createServerClient` pada halaman ubah produk agar pengisian data awal selalu konsisten bahkan saat proses SSR.
-
-## US-10 Hapus produk
+## US-11 Filter kategori atau pencarian
 
 **Prompt:**
-lanjutkan lagi semua fitur dan langsung aja push ke repository (US-10 Hapus produk)
+kerjakan fitur-fitur ini juga: US-11 Filter kategori atau pencarian
 
 **Hasil:**
-- Menambahkan konfirmasi sebelum menghapus produk menggunakan dialog `window.confirm` pada event `onSubmit` form hapus di `components/TabelProduk.jsx`.
-- Membuat Server Action `hapusProduk` di `app/admin/actions.js` yang terlindungi oleh verifikasi login admin di server untuk menghapus produk dari database Supabase.
-- Merevalidasi cache rute katalog `/` dan `/admin` sehingga daftar produk langsung terbarui setelah produk dihapus.
+- Menambahkan fitur pencarian nama produk pada katalog `app/page.jsx` menggunakan klausa `.ilike("nama", `%${q}%`)` pada query Supabase.
+- Menambahkan filter kategori dinamis dari database, ditampilkan dalam bentuk dropdown dan tombol pill interaktif.
+- Menerapkan filter kategori via query database `.eq("kategori", kategori)`.
+- Mengizinkan pencarian dan filter kategori bekerja secara bersamaan atau terpisah.
 
 **Perbaikan:**
-- Membungkus tombol hapus di dalam form berbasis Server Action dengan event handler konfirmasi pada sisi klien, memastikan aksi tetap aman dan tidak memicu penghapusan tanpa sengaja.
+- Menyediakan tombol "Reset" saat ada filter atau kata kunci pencarian aktif untuk memudahkan pengunjung mengembalikan tampilan katalog penuh.
+
+## US-15 Urutkan produk
+
+**Prompt:**
+kerjakan fitur-fitur ini juga: US-15 Urutkan produk
+
+**Hasil:**
+- Menambahkan opsi pilihan pengurutan: "Terbaru" (default), "Harga: termurah", dan "Harga: termahal".
+- Menerapkan pengurutan langsung pada level database query Supabase:
+  - Termurah: `.order("harga", { ascending: true })`
+  - Termahal: `.order("harga", { ascending: false })`
+  - Terbaru: `.order("created_at", { ascending: false })`
+
+**Perbaikan:**
+- Menambahkan pengurutan sekunder berdasarkan `id` untuk memastikan kestabilan urutan data jika terdapat harga atau tanggal dibuat yang identik.
+
+## US-16 Paginasi atau muat lebih banyak
+
+**Prompt:**
+kerjakan fitur-fitur ini juga: US-16 Paginasi atau muat lebih banyak
+
+**Hasil:**
+- Membatasi jumlah produk per halaman sebanyak 12 produk menggunakan pembatasan langsung di query database melalui metode `.range(from, to)`.
+- Menghitung total data dengan `{ count: "exact" }` untuk menghasilkan jumlah halaman yang akurat (`totalPages`).
+- Menambahkan kontrol navigasi paginasi ("Sebelumnya", nomor halaman, dan "Berikutnya").
+- Mempertahankan kata kunci pencarian, filter kategori, dan urutan saat berpindah halaman.
+
+**Perbaikan:**
+- Menggunakan helper `createPageUrl` untuk menjaga integritas query string parameter di URL pada saat pergantian halaman paginasi.
+
+**Prompt:**
+kerjakan fitur-fitur ini juga: US-16 Paginasi atau muat lebih banyak
+
+**Hasil:**
+- Membatasi jumlah produk per halaman sebanyak 12 produk menggunakan pembatasan langsung di query database melalui metode `.range(from, to)`.
+- Menghitung total data dengan `{ count: "exact" }` untuk menghasilkan jumlah halaman yang akurat (`totalPages`).
+- Menambahkan kontrol navigasi paginasi ("Sebelumnya", nomor halaman, dan "Berikutnya").
+- Mempertahankan kata kunci pencarian, filter kategori, dan urutan saat berpindah halaman.
+
+**Perbaikan:**
+- Menggunakan helper `createPageUrl` untuk menjaga integritas query string parameter di URL pada saat pergantian halaman paginasi.
 
