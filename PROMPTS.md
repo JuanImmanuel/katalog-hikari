@@ -25,10 +25,18 @@ Tampilkan produk dengan komponen KartuProduk yang sudah ada, tanpa mengubah tamp
 ## US-02 Detail produk
 
 **Prompt:**
+Baca docs/user-stories.md bagian US-02.
+
+Ubah app/produk/[id]/page.jsx supaya mengambil satu produk dari tabel "produk" di Supabase berdasarkan id di URL, di sisi server, memakai koneksi Supabase yang sudah dibuat di lib/supabase. Kalau produk tidak ditemukan, panggil notFound(). Jangan ubah tampilannya. Hapus CatatanBelumAktif dari halaman ini, tapi biarkan tombol WhatsApp.
 
 **Hasil:**
+- Mengubah `app/produk/[id]/page.jsx` agar mengambil detail satu produk langsung dari tabel `produk` di Supabase berdasarkan parameter `id` di sisi server memakai `createServerClient` dari `lib/supabase/server`.
+- Menjaga tampilan halaman tetap sama (foto, kategori, nama, harga rupiah, deskripsi, dan tombol WhatsApp).
+- Memanggil `notFound()` dari `next/navigation` jika produk tidak ditemukan atau id tidak valid.
+- Menghapus komponen dan pemanggilan `CatatanBelumAktif`.
 
 **Perbaikan:**
+- Memastikan pemanggilan fungsi `notFound()` ditempatkan di luar blok `try...catch` agar exception navigasi internal Next.js (`NEXT_NOT_FOUND`) tidak tertangkap sebagai error biasa.
 
 ## US-03 Pesan via WhatsApp
 
