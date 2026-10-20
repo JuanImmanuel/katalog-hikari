@@ -41,10 +41,20 @@ Ubah app/produk/[id]/page.jsx supaya mengambil satu produk dari tabel "produk" d
 ## US-03 Pesan via WhatsApp
 
 **Prompt:**
+Baca docs/rancangan-teknis.md bagian "Pesan WhatsApp (US-03)".
+
+Ubah components/TombolWhatsApp.jsx menjadi tautan yang membuka https://wa.me/ ke nomor di lib/toko.js, dengan pesan otomatis berisi nama dan harga produk dalam format rupiah. Pesan di-encode dengan encodeURIComponent dan dibuka di tab baru. Pertahankan tampilan tombolnya. Hapus CatatanBelumAktif yang menyebut US-03 di halaman detail produk.
 
 **Hasil:**
+- Mengubah elemen tombol pada `components/TombolWhatsApp.jsx` menjadi tautan `<a>` menuju `https://wa.me/<nomor>?text=<pesan>`.
+- Mengambil nomor WhatsApp dari `lib/toko.js`.
+- Pesan terisi otomatis berisi nama dan harga produk dalam format rupiah menggunakan `formatRupiah`, serta di-encode dengan `encodeURIComponent`.
+- Menambahkan `target="_blank"` dan `rel="noopener noreferrer"` agar terbuka di tab baru.
+- Mempertahankan gaya tampilan tombol yang sudah ada.
+- Memastikan `CatatanBelumAktif` sudah dihapus dari halaman detail produk (`app/produk/[id]/page.jsx`).
 
 **Perbaikan:**
+- Menambahkan logika normalisasi nomor telepon agar karakter non-digit dibersihkan dan nomor yang diawali angka `0` otomatis diubah menjadi format internasional (`62`) sehingga tautan WhatsApp selalu valid.
 
 ## US-04 Login admin
 
