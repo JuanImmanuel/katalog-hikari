@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSessionClient } from "@/lib/supabase/session";
 
@@ -68,4 +69,114 @@ export async function gantiPassword(prevState, formData) {
   }
 
   return { success: "Password berhasil diganti." };
+}
+
+export async function tambahProduk(formData) {
+  const supabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("Unauthorized: Anda harus login sebagai admin.");
+  }
+
+  const nama = String(formData.get("nama") || "").trim();
+  const harga = parseInt(formData.get("harga"), 10) || 0;
+  const kategori = String(formData.get("kategori") || "").trim();
+  const foto_url =
+    String(formData.get("foto_url") || "").trim() || "/produk/kopi.svg";
+  const deskripsi = String(formData.get("deskripsi") || "").trim();
+
+  if (!nama) {
+    throw new Error("Nama produk wajib diisi.");
+  }
+
+  const { error } = await supabase.from("produk").insert({
+    nama,
+    harga,
+    kategori,
+    foto_url,
+    deskripsi,
+  });
+
+  if (error) {
+    throw new Error(`Gagal menambah produk: ${error.message}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  redirect("/admin");
+}
+
+export async function ubahProduk(formData) {
+  const supabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("Unauthorized: Anda harus login sebagai admin.");
+  }
+
+  const id = formData.get("id");
+  const nama = String(formData.get("nama") || "").trim();
+  const harga = parseInt(formData.get("harga"), 10) || 0;
+  const kategori = String(formData.get("kategori") || "").trim();
+  const foto_url =
+    String(formData.get("foto_url") || "").trim() || "/produk/kopi.svg";
+  const deskripsi = String(formData.get("deskripsi") || "").trim();
+
+  if (!id || !nama) {
+    throw new Error("ID dan Nama produk wajib diisi.");
+  }
+
+  const { error } = await supabase
+    .from("produk")
+    .update({
+      nama,
+      harga,
+      kategori,
+      foto_url,
+      deskripsi,
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(`Gagal mengubah produk: ${error.message}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath(`/produk/${id}`);
+  redirect("/admin");
+}
+
+export async function hapusProduk(formData) {
+  const supabase = await createSessionClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("Unauthorized: Anda harus login sebagai admin.");
+  }
+
+  const id = formData.get("id");
+  if (!id) {
+    throw new Error("ID produk tidak valid.");
+  }
+
+  const { error } = await supabase.from("produk").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(`Gagal menghapus produk: ${error.message}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  redirect("/admin");
 }

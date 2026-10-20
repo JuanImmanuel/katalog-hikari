@@ -126,15 +126,71 @@ Tolong tambahkan fitur-fitur ini ke dalam aplikasi ini (US-07 List Produk)
 **Perbaikan:**
 - Menambahkan fallback ke `createServerClient` jika sesi cookie pada Server Component belum terisi penuh, memastikan halaman daftar produk admin selalu berhasil mengambil data dari database.
 
+## US-08 Tambah produk
+
 **Prompt:**
-Tolong tambahkan fitur-fitur ini ke dalam aplikasi ini (US-07 List Produk)
+lanjutkan lagi semua fitur dan langsung aja push ke repository (US-08 Tambah produk)
 
 **Hasil:**
-- Mengubah `app/admin/page.jsx` agar mengambil daftar produk langsung dari tabel `produk` di Supabase di sisi server, menggantikan penggunaan data contoh dari `lib/data-contoh.js`.
-- Menggunakan `createSessionClient()` untuk query data produk terurut berdasarkan `id` asc, dengan fallback ke `createServerClient()` untuk memastikan keandalan pengambilan data di server component.
-- Menampilkan seluruh daftar produk dari database menggunakan komponen `TabelProduk`.
-- Menambahkan `export const dynamic = "force-dynamic"` agar daftar produk admin selalu aktual dan tidak menggunakan data cache statis.
+- Membuat Server Action `tambahProduk` di `app/admin/actions.js` yang memverifikasi login admin dengan `supabase.auth.getUser()`, memvalidasi input, dan menyimpan produk baru ke database Supabase.
+- Mengalihkan halaman kembali ke `/admin` dan merevalidasi cache halaman `/` dan `/admin` setelah penyimpanan berhasil.
+- Menghubungkan form di `app/admin/produk/baru/page.jsx` ke Server Action `tambahProduk`.
+- Menghapus komponen `CatatanBelumAktif` dari halaman tambah produk.
 
 **Perbaikan:**
-- Menambahkan fallback ke `createServerClient` jika sesi cookie pada Server Component belum terisi penuh, memastikan halaman daftar produk admin selalu berhasil mengambil data dari database.
+- Menambahkan nilai fallback foto otomatis dan parsing tipe integer pada kolom harga untuk mencegah kegagalan constraint database Supabase.
+
+## US-09 Ubah produk
+
+**Prompt:**
+lanjutkan lagi semua fitur dan langsung aja push ke repository (US-09 Ubah produk)
+
+**Hasil:**
+- Mengubah `app/admin/produk/[id]/ubah/page.jsx` agar mengambil data produk lama dari database Supabase secara server-side menggunakan ID dari parameter URL.
+- Menampilkan halaman 404 (`notFound()`) jika ID produk tidak ditemukan di database.
+- Memasukkan data lama ke dalam `FormProduk` dengan input tersembunyi `id`.
+- Membuat Server Action `ubahProduk` di `app/admin/actions.js` yang memeriksa login admin dan memperbarui data produk di database Supabase, lalu mengarahkan kembali ke `/admin`.
+- Menghapus komponen `CatatanBelumAktif` dari halaman ubah produk.
+
+**Perbaikan:**
+- Menggunakan fallback query database dengan `createServerClient` pada halaman ubah produk agar pengisian data awal selalu konsisten bahkan saat proses SSR.
+
+## US-10 Hapus produk
+
+**Prompt:**
+lanjutkan lagi semua fitur dan langsung aja push ke repository (US-10 Hapus produk)
+
+**Hasil:**
+- Menambahkan konfirmasi sebelum menghapus produk menggunakan dialog `window.confirm` pada event `onSubmit` form hapus di `components/TabelProduk.jsx`.
+- Membuat Server Action `hapusProduk` di `app/admin/actions.js` yang terlindungi oleh verifikasi login admin di server untuk menghapus produk dari database Supabase.
+- Merevalidasi cache rute katalog `/` dan `/admin` sehingga daftar produk langsung terbarui setelah produk dihapus.
+
+**Perbaikan:**
+- Membungkus tombol hapus di dalam form berbasis Server Action dengan event handler konfirmasi pada sisi klien, memastikan aksi tetap aman dan tidak memicu penghapusan tanpa sengaja.
+
+**Prompt:**
+lanjutkan lagi semua fitur dan langsung aja push ke repository (US-09 Ubah produk)
+
+**Hasil:**
+- Mengubah `app/admin/produk/[id]/ubah/page.jsx` agar mengambil data produk lama dari database Supabase secara server-side menggunakan ID dari parameter URL.
+- Menampilkan halaman 404 (`notFound()`) jika ID produk tidak ditemukan di database.
+- Memasukkan data lama ke dalam `FormProduk` dengan input tersembunyi `id`.
+- Membuat Server Action `ubahProduk` di `app/admin/actions.js` yang memeriksa login admin dan memperbarui data produk di database Supabase, lalu mengarahkan kembali ke `/admin`.
+- Menghapus komponen `CatatanBelumAktif` dari halaman ubah produk.
+
+**Perbaikan:**
+- Menggunakan fallback query database dengan `createServerClient` pada halaman ubah produk agar pengisian data awal selalu konsisten bahkan saat proses SSR.
+
+## US-10 Hapus produk
+
+**Prompt:**
+lanjutkan lagi semua fitur dan langsung aja push ke repository (US-10 Hapus produk)
+
+**Hasil:**
+- Menambahkan konfirmasi sebelum menghapus produk menggunakan dialog `window.confirm` pada event `onSubmit` form hapus di `components/TabelProduk.jsx`.
+- Membuat Server Action `hapusProduk` di `app/admin/actions.js` yang terlindungi oleh verifikasi login admin di server untuk menghapus produk dari database Supabase.
+- Merevalidasi cache rute katalog `/` dan `/admin` sehingga daftar produk langsung terbarui setelah produk dihapus.
+
+**Perbaikan:**
+- Membungkus tombol hapus di dalam form berbasis Server Action dengan event handler konfirmasi pada sisi klien, memastikan aksi tetap aman dan tidak memicu penghapusan tanpa sengaja.
 
