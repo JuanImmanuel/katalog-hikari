@@ -112,4 +112,29 @@ Buat file proxy.js di root proyek (Next.js 16). Semua rute /admin kecuali /admin
 
 ## Debugging dan fitur bonus
 
-Tambahkan bagian baru untuk setiap error yang kamu perbaiki atau fitur bonus yang kamu kerjakan.
+## US-07 List Produk
+
+**Prompt:**
+Tolong tambahkan fitur-fitur ini ke dalam aplikasi ini (US-07 List Produk)
+
+**Hasil:**
+- Mengubah `app/admin/page.jsx` agar mengambil daftar produk langsung dari tabel `produk` di Supabase di sisi server, menggantikan penggunaan data contoh dari `lib/data-contoh.js`.
+- Menggunakan `createSessionClient()` untuk query data produk terurut berdasarkan `id` asc, dengan fallback ke `createServerClient()` untuk memastikan keandalan pengambilan data di server component.
+- Menampilkan seluruh daftar produk dari database menggunakan komponen `TabelProduk`.
+- Menambahkan `export const dynamic = "force-dynamic"` agar daftar produk admin selalu aktual dan tidak menggunakan data cache statis.
+
+**Perbaikan:**
+- Menambahkan fallback ke `createServerClient` jika sesi cookie pada Server Component belum terisi penuh, memastikan halaman daftar produk admin selalu berhasil mengambil data dari database.
+
+**Prompt:**
+Tolong tambahkan fitur-fitur ini ke dalam aplikasi ini (US-07 List Produk)
+
+**Hasil:**
+- Mengubah `app/admin/page.jsx` agar mengambil daftar produk langsung dari tabel `produk` di Supabase di sisi server, menggantikan penggunaan data contoh dari `lib/data-contoh.js`.
+- Menggunakan `createSessionClient()` untuk query data produk terurut berdasarkan `id` asc, dengan fallback ke `createServerClient()` untuk memastikan keandalan pengambilan data di server component.
+- Menampilkan seluruh daftar produk dari database menggunakan komponen `TabelProduk`.
+- Menambahkan `export const dynamic = "force-dynamic"` agar daftar produk admin selalu aktual dan tidak menggunakan data cache statis.
+
+**Perbaikan:**
+- Menambahkan fallback ke `createServerClient` jika sesi cookie pada Server Component belum terisi penuh, memastikan halaman daftar produk admin selalu berhasil mengambil data dari database.
+
