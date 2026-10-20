@@ -59,10 +59,21 @@ Ubah components/TombolWhatsApp.jsx menjadi tautan yang membuka https://wa.me/ ke
 ## US-04 Login admin
 
 **Prompt:**
+Baca AGENTS.md bagian aturan keamanan dan docs/user-stories.md bagian US-04.
+
+Buat login admin memakai Supabase Auth (email dan password) dengan @supabase/ssr dan cookie, memakai SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY. Login diproses dengan Server Action di app/admin/actions.js dan disambungkan ke form di app/admin/login/page.jsx. Login berhasil diarahkan ke /admin; login gagal menampilkan pesan error yang jelas di halaman login. Buat juga tombol "Keluar" di components/NavAdmin.jsx berfungsi: mengakhiri sesi lalu kembali ke /admin/login. Jangan ubah tampilan. Hapus CatatanBelumAktif dari halaman login.
 
 **Hasil:**
+- Membuat modul koneksi sesi admin di `lib/supabase/session.js` dan re-export di `lib/supabase/index.js` menggunakan `createServerClient` dari `@supabase/ssr` dengan cookie handler (`getAll`, `setAll`) serta environment variable `SUPABASE_URL` dan `SUPABASE_PUBLISHABLE_KEY`.
+- Membuat Server Action `login` dan `logout` di `app/admin/actions.js`.
+  - `login` memvalidasi input, melakukan autentikasi via Supabase Auth (`signInWithPassword`), mengarahkan ke `/admin` jika berhasil, atau mengembalikan pesan error jika gagal.
+  - `logout` mengakhiri sesi via Supabase Auth (`signOut`) lalu mengarahkan ke `/admin/login`.
+- Menyambungkan form login di `app/admin/login/page.jsx` menggunakan `useActionState` untuk menampilkan pesan error saat login gagal tanpa mengubah struktur tampilan form.
+- Menghubungkan tombol "Keluar" pada `components/NavAdmin.jsx` ke Server Action `logout`.
+- Menghapus komponen `CatatanBelumAktif` dari halaman login.
 
 **Perbaikan:**
+- Menggunakan named export langsung (`login`, `logout`) pada Server Action di `app/admin/actions.js` agar kompatibel penuh dengan static analysis dan bundler Turbopack Next.js.
 
 ## US-05 Ganti password
 
